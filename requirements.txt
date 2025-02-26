@@ -2,3 +2,4 @@ Flask
 yahooquery
 pandas
 requests
+gunicorn
