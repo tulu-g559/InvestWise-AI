@@ -32,7 +32,7 @@ def get_stock_data():
     return render_template("stocks.html", stocks=stock_data)  # Render HTML for direct access
 
 ###### INVESTMENT RECOMMENDATIONS ######
-file_path = "C:/Users/Arnab/OneDrive/Desktop/cleaned_dataset.csv"  # Relative path to ensure portability
+file_path = "cleaned_dataset.csv"  # Relative path to ensure portability
 df = pd.read_csv(file_path)
 
 # Map risk levels
