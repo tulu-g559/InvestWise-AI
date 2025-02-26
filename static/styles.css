@@ -1,0 +1,41 @@
+body {
+    background: linear-gradient(135deg, #eab0dc, #a29bfe, #74b9ff);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background: linear-gradient(to right, #4B0082, #0000FF); /* Indigo to Blue gradient */
+    color: white;
+    padding: 15px;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Center align buttons */
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: rgb(190, 174, 249);
+    text-decoration: none;
+    padding: 10px 15px; /* Add padding to buttons */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #00008B; /* Darker Blue on hover */
+}
+
+.content {
+    padding: 20px;
+    background-color: 135deg, #eab0dc, #a29bfe, #74b9ff; /* Light Blue background for content */
+}

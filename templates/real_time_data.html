@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">Real-Time Data for {{ symbol }}</h1>
+
+<!-- View Graph Button -->
+<button id="viewGraphBtn" class="graph-btn">View Graph</button>
+
+<!-- Chart Canvas -->
+<canvas id="stockChart" width="400" height="200" style="display:none;"></canvas>
+<p id="noDataMessage" style="display: none; color: red;">No real-time data available.</p>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e2f;
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+  }
+  .title {
+    margin-bottom: 20px;
+    font-size: 2em;
+  }
+  .graph-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  .graph-btn:hover {
+    background-color: #45a049;
+  }
+</style>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const symbol = "{{ symbol }}";  
+  const viewGraphBtn = document.getElementById('viewGraphBtn');
+  const stockChart = document.getElementById('stockChart');
+  const ctx = stockChart.getContext('2d');
+
+  let stockData = { dates: [], prices: [] };
+  let chart = null;
+
+  // Fetch real-time data
+  const fetchRealTimeData = () => {
+    fetch('/real_time_api?symbol=' + encodeURIComponent(symbol))
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error(data.error);
+          document.getElementById('noDataMessage').style.display = 'block';
+        } else {
+          updateChart(data);
+        }
+      })
+      .catch(error => console.log('Error fetching data:', error));
+  };
+
+  // Update Chart
+  const updateChart = (newData) => {
+    if (!newData || !newData.price) {
+        console.log("No valid data received:", newData);
+        return;
+    }
+
+    const now = new Date().toLocaleTimeString();
+    stockData.dates.push(now);
+    stockData.prices.push(newData.price);
+
+    if (stockData.dates.length > 20) { 
+        stockData.dates.shift();
+        stockData.prices.shift();
+    }
+
+    chart.data.labels = stockData.dates;
+    chart.data.datasets[0].data = stockData.prices;
+    chart.update();
+};
+
+  // Button Event Listener
+  viewGraphBtn.addEventListener("click", function () {
+    stockChart.style.display = "block";  // Show the graph
+
+    if (!chart) {
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: stockData.dates,
+          datasets: [{
+            label: symbol + ' Price',
+            data: stockData.prices,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            fill: false,
+            tension: 0.2
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { title: { display: true, text: 'Time' } },
+            y: { title: { display: true, text: 'Price (₹)' } }
+          }
+        }
+      });
+
+      // Start fetching real-time data every 5 seconds
+      setInterval(fetchRealTimeData, 5000);
+    }
+  });
+</script>
+
+{% endblock %}

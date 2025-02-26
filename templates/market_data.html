@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}Market Data{% endblock %}
+
+{% block content %}
+    <h1 class="title">📈 Market Data</h1>
+
+    <h2>Stock Data</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Stock Name</th>
+            <th>Symbol</th>
+            <th>Latest Price (₹)</th>
+            <th>Change (₹)</th>
+            <th>Change (%)</th>
+        </tr>
+    </thead>
+    <tbody id="stockTableBody">
+        {% for row in stocks.data %}
+        <tr>
+            <td>{{ row[0] }}</td>  <!-- Stock Symbol -->
+            <td>{{ row[1] }}</td>  <!-- Latest Price -->
+            <td class="change-cell" data-value="{{ row[2] }}">{{ row[2] }}</td>  <!-- Change -->
+            <td class="change-cell" data-value="{{ row[3] }}">{{ row[3] }}</td>  <!-- Change (%) -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+    <label for="sheetSelect"><strong>🔍 Select Market Index:</strong></label>
+    <select id="sheetSelect">
+        {% for sheet in sheets %}
+        <option value="{{ sheet }}">{{ sheet }}</option>
+        {% endfor %}
+    </select>
+
+    <button class="graph-btn" id="updateGraph">📊 Update Graph</button>
+
+    <h2>📉 Stock Data</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    {% for header in stocks.headers %}
+                    <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody id="stockTableBody">
+                {% for row in stocks.data %}
+                <tr>
+                    {% for cell in row %}
+                        {% if loop.index0 == stocks.change_col or loop.index0 == stocks.change_perc_col %}
+                            <td class="change-cell" data-value="{{ cell }}">{{ cell }}</td>
+                        {% else %}
+                            <td>{{ cell }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2>📊 Stock Price Chart</h2>
+    <canvas id="stockChart"></canvas>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            function updateChart(dates, prices) {
+                var ctx = document.getElementById("stockChart").getContext("2d");
+                if (window.stockChart) window.stockChart.destroy();
+                window.stockChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: "Stock Prices",
+                            data: prices,
+                            borderColor: "#4CAF50",
+                            backgroundColor: "rgba(76, 175, 80, 0.2)",
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { labels: { color: "#FFF" } }
+                        },
+                        scales: {
+                            x: { grid: { color: "#444" }, ticks: { color: "#FFF" } },
+                            y: { beginAtZero: true, grid: { color: "#444" }, ticks: { color: "#FFF" } }
+                        }
+                    }
+                });
+            }
+
+            function fetchMarketData(sheetName) {
+                $.getJSON("/get_data", { sheet_name: sheetName }, function(data) {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    let tableBody = $("#stockTableBody").empty();
+                    data.data.forEach(row => {
+                        let tr = $("<tr></tr>");
+                        row.forEach((cell, index) => {
+                            let td = $("<td></td>").text(cell);
+                            if (index === data.change_col || index === data.change_perc_col) {
+                                td.addClass("change-cell").attr("data-value", cell);
+                            }
+                            tr.append(td);
+                        });
+                        tableBody.append(tr);
+                    });
+
+                    updateChangeColors();
+                    updateChart(['2023-01-01', '2023-01-02', '2023-01-03'], [150, 155, 160]);
+                });
+            }
+
+            function updateChangeColors() {
+                $(".change-cell").each(function() {
+                    let value = parseFloat($(this).text());
+                    if (!isNaN(value)) {
+                        $(this).css("color", value >= 0 ? "#00FF00" : "#FF5733");
+                    }
+                });
+            }
+
+            $("#sheetSelect").change(function() {
+                fetchMarketData($(this).val());
+            });
+
+            $("#updateGraph").click(function() {
+                fetchMarketData($("#sheetSelect").val());
+            });
+
+            fetchMarketData($("#sheetSelect").val());
+        });
+        
+    </script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #1e1e2f, #2b2b3c);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .title {
+            font-size: 2.2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 255, 255, 0.5);
+        }
+        select {
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 8px;
+            background: #222;
+            color: white;
+            border: none;
+            outline: none;
+            box-shadow: 0px 3px 10px rgba(0, 255, 255, 0.3);
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: rgba(34, 34, 34, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            overflow: hidden;
+            color: white;
+            box-shadow: 0px 4px 15px rgba(0, 255, 255, 0.3);
+        }
+        th {
+            background: linear-gradient(to right, #0073e6, #4CAF50);
+            color: white;
+            padding: 15px;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+        }
+        .graph-btn {
+            background: linear-gradient(to right, #4CAF50, #0073e6);
+            color: white;
+            padding: 12px 20px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+        }
+        .graph-btn:hover {
+            background: linear-gradient(to right, #0073e6, #4CAF50);
+            transform: scale(1.05);
+        }
+        canvas {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            display: block;
+            background: rgba(34, 34, 34, 0.8);
+            border-radius: 10px;
+            box-shadow: 0px 3px 10px rgba(0, 255, 255, 0.3);
+        }
+        .change-cell {
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+    </style>
+
+{% endblock %}

@@ -1,0 +1,159 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversational Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block content %}
+    <div class="chatbot-container">
+        <div class="header">
+            <h1>Conversational Chatbot</h1>
+            <p>Interact with your AI-powered financial assistant below:</p>
+        </div>
+
+        <div id="chat-window">
+            <div id="messages"></div>
+        </div>
+
+        <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" required>
+            <button type="submit"><i class="fas fa-paper-plane"></i> Send</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const messages = document.getElementById('messages');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const userMessage = userInput.value;
+            
+            // Display user message
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'user-message';
+            userMsgDiv.textContent = userMessage;
+            messages.appendChild(userMsgDiv);
+
+            // Simulate chatbot response
+            const botMsgDiv = document.createElement('div');
+            botMsgDiv.className = 'bot-message';
+            botMsgDiv.textContent = "Thank you for your message. How can I assist you further?";
+            messages.appendChild(botMsgDiv);
+
+            // Clear input
+            userInput.value = '';
+            messages.scrollTop = messages.scrollHeight;
+        });
+    </script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chatbot-container {
+            width: 100%;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        p {
+            color: #7f8c8d;
+            font-weight: 400;
+        }
+
+        #chat-window {
+            height: 400px;
+            overflow-y: auto;
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .user-message, .bot-message {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 15px;
+            margin: 5px 0;
+            display: inline-block;
+        }
+
+        .user-message {
+            background-color: #3498db;
+            color: white;
+            text-align: right;
+            border-top-left-radius: 0;
+        }
+
+        .bot-message {
+            background-color: #2ecc71;
+            color: white;
+            text-align: left;
+            border-top-right-radius: 0;
+        }
+
+        #chat-form {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        #user-input:focus {
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .fas.fa-paper-plane {
+            font-size: 18px;
+        }
+    </style>
+    {% endblock %}
+</body>
+</html>

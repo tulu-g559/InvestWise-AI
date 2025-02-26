@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Stock & Mutual Fund Recommendation</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="risk_level">Choose Risk Level:</label>
+            <select id="risk_level" name="risk_level" required>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="min_investment">Enter Minimum Investment:</label>
+            <input type="number" id="min_investment" name="min_investment" required>
+        </div>
+        <button type="submit" class="btn">Get Recommendations</button>
+    </form>
+
+    {% if recommendations %}
+    <div class="result-box">
+        <h3>Recommended Stocks/Mutual Funds:</h3>
+        <ul>
+            {% for stock in recommendations %}
+            <li><strong>{{ stock['Names'] }}</strong> ({{ stock['Category'] }}) - Min Investment: ₹{{ stock['min_investment'] }}, Return Rate: {{ stock['return_rate'] }}%</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</div>
+{% endblock %}

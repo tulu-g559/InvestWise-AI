@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Investment</h1>
+<p>Discover personalized investment recommendations tailored to your financial goals. Use the insights provided to make informed decisions and grow your portfolio effectively.</p>
+
+<div class="investment-section">
+    <h2>Your Current Investment Goals</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Add a Goal</th>
+            </tr>
+        </thead>
+        <tbody id="goal-list">
+            <tr>
+                <td><input type="text" name="goal1" placeholder="Enter your goal"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <button onclick="addGoal()">Add More Goals</button>
+</div>
+
+<h2>Recommended Investments</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Investment Option</th>
+            <th>Risk Level</th>
+            <th>Potential ROI</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Index Funds</td>
+            <td>Low</td>
+            <td>8-10% annually</td>
+        </tr>
+        <tr>
+            <td>Stocks (Blue Chip)</td>
+            <td>Medium</td>
+            <td>12-15% annually</td>
+        </tr>
+        <tr>
+            <td>Cryptocurrency</td>
+            <td>High</td>
+            <td>Varies (25%+ potential)</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- New Recommendation Link -->
+<p>
+    Need recommendation for investments? 
+    <a href="{{ url_for('index') }}">Tap here</a>
+</p>
+
+<script>
+    let goalCount = 1;
+
+    function addGoal() {
+        goalCount++;
+        const goalList = document.getElementById("goal-list");
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `<td><input type="text" name="goal${goalCount}" placeholder="Enter your goal"></td>`;
+        goalList.appendChild(newRow);
+    }
+</script>
+
+{% endblock %}
