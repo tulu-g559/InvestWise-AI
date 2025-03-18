@@ -8,7 +8,7 @@ import markdown
 app = Flask(__name__)
 
 # Configure Gemini API Key
-genai.configure(api_key="AIzaSyD-t6Biw9rVWCSvZ1sXfKbAWwJzSw2ll2g")
+genai.configure(api_key="your_gemini_api_key")
 
 def get_finance_fact():
     model = genai.GenerativeModel("gemini-1.5-flash")
