@@ -12,7 +12,7 @@ genai.configure(api_key="your_gemini_api_key")
 
 def get_finance_fact():
     model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content("Give me 5 interesting one-liner finance facts in ponits.")
+    response = model.generate_content("Give me 5 interesting one-liner finance facts in ponits. Renew the facts after every refresh.")
     
     if response and hasattr(response, 'text'):
         fact_markdown = response.text
@@ -94,9 +94,9 @@ def chatbot():
     return render_template("chatbot.html")
 
 ###### INVESTMENTS PAGE ######
-@app.route("/investments")
-def investments():
-    return render_template("investments.html")
+# @app.route("/investments")
+# def investments():
+#     return render_template("investments.html")
 
 ###### MARKET DATA ######
 GOOGLE_SHEETS_BASE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRWAl7HcCZ49EJRSKLVCTkaTApQwYuVn1DaWTgBvVWBInWtPoUGhHpgN2he-lhxpHHnww_d7eM1fV6a/pub?output=csv&gid="
