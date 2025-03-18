@@ -2,8 +2,28 @@ from flask import Flask, render_template, request, jsonify
 from yahooquery import Ticker
 import pandas as pd
 import requests, csv, datetime, logging
+import google.generativeai as genai
+import markdown
 
 app = Flask(__name__)
+
+# Configure Gemini API Key
+genai.configure(api_key="AIzaSyD-t6Biw9rVWCSvZ1sXfKbAWwJzSw2ll2g")
+
+def get_finance_fact():
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content("Give me 5 interesting one-liner finance facts in ponits.")
+    
+    if response and hasattr(response, 'text'):
+        fact_markdown = response.text
+        fact_html = markdown.markdown(fact_markdown)  # Convert markdown to HTML
+        return fact_html
+    return "Finance is fascinating!"
+
+@app.route("/get_finance_fact")
+def finance_fact():
+    fact = get_finance_fact()
+    return jsonify({"fact": fact})
 
 @app.route("/")
 def dashboard():

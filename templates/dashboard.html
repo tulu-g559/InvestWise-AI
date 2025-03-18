@@ -7,8 +7,8 @@
     <a href="/settings" title="Settings"><img src="{{ url_for('static', filename='settings.png') }}" alt="Settings"></a>
 </div>
 
-<h1>Welcome to the Financial Dashboard</h1>
-<p>This dashboard provides you with various tools and features to manage your investments and financial goals efficiently.</p>
+<h1>Welcome to InvestWise AI</h1>
+<p>We provides you with various tools and features to manage your investments and financial goals efficiently.</p>
 
 
 
@@ -82,14 +82,14 @@
     <div class="fact-and-chart">
         <div class="fact-card">
             <h3>Finance Fact</h3>
-            <p id="finance-fact">Did you know? The global stock market capitalization has grown by over 500% in the last two decades.</p>
+            <p id="finance-fact">Loading finance fact...</p>
         </div>
         <div class="chart-card">
             <canvas id="investmentPieChart"></canvas>
         </div>
     </div>
 </div>
-
+ 
 <!-- Floating "Ask Investo" button -->
 <div class="floating-investo">
     <div class="investo-label">Ask Investo</div>
@@ -279,18 +279,18 @@
 
 
 <!-- Chatbot Floating Button -->
-<button class="chatbot-btn" onclick="toggleChatbot()">💬 Ask Investo</button>
+<!-- <button class="chatbot-btn" onclick="toggleChatbot()">💬 Ask Investo</button> -->
 
 <!-- Chatbot Box -->
-<div class="chatbot-container" id="chatbot-container">
+<!-- <div class="chatbot-container" id="chatbot-container">
     <h3>Ask Investo 🤖</h3>
     <p>Type your question below:</p>
     <textarea id="chat-input"></textarea>
     <button onclick="sendMessage()">Send</button>
     <p id="chat-response"></p>
-</div>
+</div> -->
 
-<script>
+<!-- <script>
     function toggleChatbot() {
         let chatbot = document.getElementById("chatbot-container");
         chatbot.style.display = chatbot.style.display === "none" ? "block" : "none";
@@ -307,7 +307,7 @@
             document.getElementById("chat-response").innerText = "Investo AI: Here’s what I found about " + userMessage;
         }, 2000);
     }
-</script>
+</script> -->
 
 <style>
 .chatbot-btn {
@@ -387,4 +387,21 @@
     const ctx = document.getElementById('investmentPieChart').getContext('2d');
     new Chart(ctx, config);
 </script>
+
+<!-- Script for generating finance facts -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("/get_finance_fact")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("finance-fact").innerHTML = "Did you know? " + data.fact;  // Use innerHTML to support bold text
+        })
+        .catch(error => {
+            console.error("Error fetching finance fact:", error);
+            document.getElementById("finance-fact").innerText = "Finance is fascinating!";
+        });
+    });
+</script>
+
+
 {% endblock %}
