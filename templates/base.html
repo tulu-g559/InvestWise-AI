@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +10,22 @@
         function toggleSidebar() {
             const sidebar = document.getElementById("sidebar");
             const content = document.getElementById("content");
-            
+            const logoText = document.querySelector(".logo h3");
+
             if (sidebar.classList.contains("collapsed")) {
                 sidebar.classList.remove("collapsed");
                 content.classList.remove("expanded");
+                logoText.style.display = "block"; // Show the h3 text when expanded
             } else {
                 sidebar.classList.add("collapsed");
                 content.classList.add("expanded");
+                logoText.style.display = "none"; // Hide the h3 text when collapsed
             }
         }
     </script>
+
     <style>
-        body {
+         body {
             display: flex;
             margin: 0;
             font-family: Arial, sans-serif;
@@ -39,14 +44,33 @@
             flex-direction: column;
             align-items: center;
             transition: width 0.3s ease-in-out;
-            overflow: hidden;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+        }
+
+        /* Custom Scrollbar for Chrome & Edge */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         /* Collapsed Sidebar */
         .sidebar.collapsed {
             width: 60px;
+            overflow-y: hidden;
+            /* Hide scrollbar when collapsed */
         }
 
+        /* Logo Section */
         .logo {
             text-align: center;
             margin: 20px 0;
@@ -54,14 +78,22 @@
         }
 
         .logo img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50px;
+            width: 80%;
+            max-width: 50px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+            object-fit: contain;
         }
 
+        /* When Sidebar is Collapsed */
         .sidebar.collapsed .logo img {
-            width: 40px;
-            opacity: 0.8;
+            max-width: 40px;
+        }
+
+        .sidebar.collapsed .logo h3 {
+            display: none;
         }
 
         /* Sidebar Navigation */
@@ -69,6 +101,7 @@
             list-style: none;
             padding: 0;
             width: 100%;
+            margin-top: 5px;
         }
 
         .nav-links li {
@@ -81,12 +114,15 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            padding: 15px;
-            transition: background 0.3s;
+            padding: 12px 15px;
+            transition: background 0.3s, padding-left 0.3s;
+            font-size: 15px;
         }
 
+        /* Hover Effect */
         .nav-links a:hover {
             background: #34495e;
+            padding-left: 20px;
         }
 
         /* Hide Text When Collapsed */
@@ -96,7 +132,7 @@
 
         /* Sidebar Icons */
         .nav-links a i {
-            margin-right: 10px;
+            margin-right: 12px;
             font-size: 18px;
         }
 
@@ -129,8 +165,28 @@
         .content.expanded {
             margin-left: 80px;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .sidebar.collapsed {
+                width: 50px;
+            }
+
+            .content {
+                margin-left: 210px;
+            }
+
+            .content.expanded {
+                margin-left: 60px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Sidebar -->
@@ -156,4 +212,5 @@
     </div>
 
 </body>
+
 </html>
